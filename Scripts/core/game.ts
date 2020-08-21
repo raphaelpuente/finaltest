@@ -3,11 +3,12 @@ let Game = (function(){
     // variable declarations
     let canvas:HTMLCanvasElement = document.getElementsByTagName('canvas')[0];
     let stage:createjs.Stage;
-    
     let assets: createjs.LoadQueue;
-
-    let exampleLabel: UIObjects.Label;
-    let exampleButton: UIObjects.Button;    
+    let leftLabel: UIObjects.Label;
+    let rightLabel: UIObjects.Label;
+    let rollButton: UIObjects.Button;
+    let leftDice: Core.GameObject;
+    let rightDice: Core.GameObject;
 
     let assetManifest = 
     [
@@ -68,18 +69,65 @@ let Game = (function(){
      * This is the main function of the Game (where all the fun happens)
      *
      */
+    
+   
+    
+    function buildInterface():void
+    {
+        //created the starting point labels
+        leftLabel = new UIObjects.Label("-", "40px", "Consolas", "#000000", Config.Game.CENTER_X-150, Config.Game.CENTER_Y+60, true);
+        stage.addChild(leftLabel);
+
+        rightLabel = new UIObjects.Label("-", "40px", "Consolas", "#000000", Config.Game.CENTER_X+150, Config.Game.CENTER_Y+60, true);
+        stage.addChild(rightLabel);
+
+        //created the roll button
+        rollButton = new UIObjects.Button("rollButton", Config.Game.CENTER_X, Config.Game.CENTER_Y + 150, true);
+        stage.addChild(rollButton);
+
+        //created the starting point dices image
+        leftDice = new Core.GameObject("blank",Config.Game.CENTER_X-150,Config.Game.CENTER_Y-80,true);
+        stage.addChild(leftDice);
+
+        rightDice = new Core.GameObject("blank",Config.Game.CENTER_X+150,Config.Game.CENTER_Y-80,true);
+        stage.addChild(rightDice);
+    }
+    
+    
     function Main():void
     {
         console.log(`%c Main Function`, "color: grey; font-size: 14px; font-weight: bold;");
 
-        exampleLabel = new UIObjects.Label("An Example Label", "40px", "Consolas", "#000000", Config.Game.CENTER_X, Config.Game.CENTER_Y, true);
-        stage.addChild(exampleLabel);
+        buildInterface();
+           
 
-        exampleButton = new UIObjects.Button("button", Config.Game.CENTER_X, Config.Game.CENTER_Y + 100, true);
-        stage.addChild(exampleButton);
+        rollButton.on("click", ()=>{
 
-        exampleButton.on("click", ()=>{
-            console.log("example button clicked");
+            //left dice
+            let leftNumber = Math.floor((Math.random() * 6) + 1)
+            
+            stage.removeChild(leftLabel);
+            leftLabel = new UIObjects.Label(leftNumber.toString(), "40px", "Consolas", "#000000", Config.Game.CENTER_X-150, Config.Game.CENTER_Y+60, true);
+            stage.addChild(leftLabel);
+
+            stage.removeChild(leftDice)
+            leftDice = new Core.GameObject(leftNumber.toString(),Config.Game.CENTER_X-150,Config.Game.CENTER_Y-80,true);
+            stage.addChild(leftDice);
+
+            //right dice
+            let rightNumber = Math.floor((Math.random() * 6) + 1)
+            stage.removeChild(rightLabel);
+            rightLabel = new UIObjects.Label(rightNumber.toString(), "40px", "Consolas", "#000000", Config.Game.CENTER_X+150, Config.Game.CENTER_Y+60, true);
+            stage.addChild(rightLabel);
+
+            stage.removeChild(rightDice)
+            rightDice = new Core.GameObject(rightNumber.toString(),Config.Game.CENTER_X+150,Config.Game.CENTER_Y-80,true);
+            stage.addChild(rightDice);
+ 
+
+
+
+            
         });
     }
 
